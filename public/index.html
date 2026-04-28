@@ -20,7 +20,7 @@
   .msg { display: flex; gap: 8px; max-width: 88%; animation: fadeUp 0.2s ease; }
   @keyframes fadeUp { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
   .msg.user { align-self: flex-end; flex-direction: row-reverse; }
-  .msg.bot  { align-self: flex-start; }
+  .msg.bot { align-self: flex-start; }
   .msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: #C9A84C; color: #0F1C2E; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'DM Serif Display', serif; }
   .msg.user .msg-avatar { background: #E8E4DC; color: #888; font-family: 'DM Sans', sans-serif; }
   .msg-bubble { padding: 10px 14px; border-radius: 14px; font-size: 13.5px; line-height: 1.65; background: #fff; border: 1px solid #EDEAE3; color: #1a1a1a; }
@@ -66,46 +66,47 @@
   </div>
 </div>
 <script>
-const SYSTEM = `Eres el asistente virtual de Chronos Intelligence, una agencia especializada en automatización con IA para joyerías y relojerías. Tu objetivo es guiar al visitante por este flujo:
+const SYSTEM = `Eres el asistente virtual de Chronos Intelligence, una agencia especializada en automatizacion con IA para joyerias y relojerias. Tu objetivo es guiar al visitante por este flujo:
 
 1. PRIMERO: Hacer el Chronos Leak Test de forma conversacional, una pregunta a la vez:
-   a) ¿Cuántas consultas recibes al mes por todos tus canales (WhatsApp, Instagram, web)?
-   b) ¿Cuántas acaban comprando? (porcentaje aproximado)
-   c) ¿Cuánto tardas en responder a una consulta nueva?
-   d) ¿Haces seguimiento a los que preguntaron pero no compraron?
-   e) ¿Cuánto suele ser el ticket medio de una venta?
+   a) Cuantas consultas recibes al mes por todos tus canales (WhatsApp, Instagram, web)?
+   b) Cuantas acaban comprando? (porcentaje aproximado)
+   c) Cuanto tardas en responder a una consulta nueva?
+   d) Haces seguimiento a los que preguntaron pero no compraron?
+   e) Cuanto suele ser el ticket medio de una venta?
 
-2. DESPUÉS: Dar un diagnóstico con el dinero estimado que pierden. Cálculo: consultas × porcentaje_perdido × ticket_medio. Sé específico con números.
+2. DESPUES: Dar un diagnostico con el dinero estimado que pierden. Calculo: consultas x porcentaje_perdido x ticket_medio. Se especifico con numeros.
 
 3. FINALMENTE: Recomendar el servicio adecuado:
-   - Pérdidas altas → Chronos Scan 72h (130€, descontable)
-   - Quieren empezar despacio → Chronos Conversion Kit (400€)
-   - Muy interesados → Sistema Chronos 24/7 (1800€)
+   - Perdidas altas: Chronos Scan 72h (130 euros, descontable)
+   - Quieren empezar despacio: Chronos Conversion Kit (400 euros)
+   - Muy interesados: Sistema Chronos 24/7 (1800 euros)
 
 SERVICIOS:
 - Chronos Leak Test: gratuito
-- Chronos Scan 72h: 130€ descontable
-- Chronos Conversion Kit: 400€
-- Sistema Chronos 24/7: 1800€
-- Chronos Optimize: 200€/mes
+- Chronos Scan 72h: 130 euros descontable
+- Chronos Conversion Kit: 400 euros
+- Sistema Chronos 24/7: 1800 euros
+- Chronos Optimize: 200 euros/mes
 
-TONO: Profesional pero cercano. Vende resultados, no tecnología. Mensajes cortos, máximo 3-4 líneas. Usa **texto** para destacar cifras.`;
+TONO: Profesional pero cercano. Vende resultados, no tecnologia. Mensajes cortos, maximo 3-4 lineas. Usa **texto** para destacar cifras.`;
 
-const CHIPS_INIT  = ["Quiero saber cuánto pierdo", "¿Qué hacéis exactamente?", "Ver precios"];
-const CHIPS_LATER = ["Quiero el Chronos Scan", "Cuéntame el Conversion Kit", "Sistema completo 24/7"];
+const CHIPS_INIT = ["Quiero saber cuanto pierdo", "Que haceis exactamente?", "Ver precios"];
+const CHIPS_LATER = ["Quiero el Chronos Scan", "Cuentame el Conversion Kit", "Sistema completo 24/7"];
 let history = [];
 
-function addMsg(role, html, isTyping=false) {
+function addMsg(role, html, isTyping) {
   const msgs = document.getElementById('msgs');
   const wrap = document.createElement('div');
-  wrap.className = 'msg ' + (role==='user' ? 'user' : 'bot');
+  wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
   const av = document.createElement('div');
   av.className = 'msg-avatar';
-  av.textContent = role==='user' ? 'Tú' : 'C';
+  av.textContent = role === 'user' ? 'Tu' : 'C';
   const bub = document.createElement('div');
   bub.className = 'msg-bubble';
   bub.innerHTML = isTyping ? '<div class="typing"><span></span><span></span><span></span></div>' : html;
-  wrap.appendChild(av); wrap.appendChild(bub);
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
   msgs.appendChild(wrap);
   msgs.scrollTop = msgs.scrollHeight;
   return bub;
@@ -114,29 +115,29 @@ function addMsg(role, html, isTyping=false) {
 function setChips(arr) {
   const c = document.getElementById('chips');
   c.innerHTML = '';
-  arr.forEach(t => {
+  arr.forEach(function(t) {
     const b = document.createElement('button');
-    b.className = 'chip'; b.textContent = t;
-    b.onclick = () => { document.getElementById('inp').value = t; send(); };
+    b.className = 'chip';
+    b.textContent = t;
+    b.onclick = function() { document.getElementById('inp').value = t; send(); };
     c.appendChild(b);
   });
 }
 
 function mdToHtml(t) {
-  return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  return t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
 }
 
 async function callAPI(messages) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM, messages })
+    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM, messages: messages })
   });
   const data = await res.json();
-  if (data.error) throw new Error(JSON.stringify(data.error));
-  if (!data.content) throw new Error('Respuesta vacía: ' + JSON.stringify(data));
-  return data.content.map(b => b.text||'').join('');
-}
+  if (data.error) { throw new Error(typeof data.error === 'object' ? data.error.message : data.error); }
+  if (!data.content) { throw new Error('Sin respuesta'); }
+  return data.content.map(function(b) { return b.text || ''; }).join('');
 }
 
 async function send() {
@@ -145,16 +146,18 @@ async function send() {
   const text = inp.value.trim();
   if (!text) return;
   document.getElementById('chips').innerHTML = '';
-  inp.value = ''; btn.disabled = true;
-  addMsg('user', text);
-  history.push({ role:'user', content:text });
-  const tb = addMsg('bot','',true);
+  inp.value = '';
+  btn.disabled = true;
+  addMsg('user', text, false);
+  history.push({ role: 'user', content: text });
+  const tb = addMsg('bot', '', true);
   try {
     const reply = await callAPI(history);
     tb.innerHTML = mdToHtml(reply);
-    history.push({ role:'assistant', content:reply });
+    history.push({ role: 'assistant', content: reply });
     const lower = reply.toLowerCase();
-    setChips((lower.includes('scan')||lower.includes('kit')||lower.includes('24/7')||history.length>8) ? CHIPS_LATER : []);
+    const showLater = lower.indexOf('scan') > -1 || lower.indexOf('kit') > -1 || lower.indexOf('24/7') > -1 || history.length > 8;
+    setChips(showLater ? CHIPS_LATER : []);
   } catch(e) {
     tb.innerHTML = 'Error: ' + e.message;
   }
@@ -165,16 +168,16 @@ async function send() {
 async function initChat() {
   const btn = document.getElementById('sendBtn');
   btn.disabled = true;
-  document.getElementById('inp').addEventListener('keydown', e => { if(e.key==='Enter') send(); });
+  document.getElementById('inp').addEventListener('keydown', function(e) { if (e.key === 'Enter') send(); });
   btn.addEventListener('click', send);
-  const tb = addMsg('bot','',true);
+  const tb = addMsg('bot', '', true);
   try {
-    const reply = await callAPI([{ role:'user', content:'Saluda al visitante brevemente, preséntate como el asistente de Chronos Intelligence, y ofrece hacer el diagnóstico gratuito de fugas de ingresos. Máximo 3 líneas.' }]);
+    const reply = await callAPI([{ role: 'user', content: 'Saluda al visitante brevemente, presentate como el asistente de Chronos Intelligence, y ofrece hacer el diagnostico gratuito de fugas de ingresos. Maximo 3 lineas.' }]);
     tb.innerHTML = mdToHtml(reply);
-    history.push({ role:'assistant', content:reply });
+    history.push({ role: 'assistant', content: reply });
     setChips(CHIPS_INIT);
   } catch(e) {
-    tb.innerHTML = '¡Hola! Soy el asistente de <strong>Chronos Intelligence</strong>. ¿Quieres descubrir cuánto dinero estás perdiendo cada mes?';
+    tb.innerHTML = 'Hola! Soy el asistente de <strong>Chronos Intelligence</strong>. Quieres descubrir cuanto dinero estas perdiendo cada mes? Error detalle: ' + e.message;
     setChips(CHIPS_INIT);
   }
   btn.disabled = false;
