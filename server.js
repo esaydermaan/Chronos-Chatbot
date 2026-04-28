@@ -7,8 +7,8 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.post('/api/chat', async (req, res) => {
-  const apiKey = req.headers['x-api-key'];
-  if (!apiKey) return res.status(400).json({ error: 'API key requerida' });
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key no configurada' });
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
