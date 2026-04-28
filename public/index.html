@@ -133,7 +133,10 @@ async function callAPI(messages) {
     body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system: SYSTEM, messages })
   });
   const data = await res.json();
+  if (data.error) throw new Error(JSON.stringify(data.error));
+  if (!data.content) throw new Error('Respuesta vacía: ' + JSON.stringify(data));
   return data.content.map(b => b.text||'').join('');
+}
 }
 
 async function send() {
@@ -153,7 +156,7 @@ async function send() {
     const lower = reply.toLowerCase();
     setChips((lower.includes('scan')||lower.includes('kit')||lower.includes('24/7')||history.length>8) ? CHIPS_LATER : []);
   } catch(e) {
-    tb.innerHTML = 'Error al conectar. Inténtalo de nuevo.';
+    tb.innerHTML = 'Error: ' + e.message;
   }
   btn.disabled = false;
   document.getElementById('msgs').scrollTop = document.getElementById('msgs').scrollHeight;
